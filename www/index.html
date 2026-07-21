@@ -282,10 +282,12 @@
     </nav>
 
     <script>
-        // Функция чтения данных из файла data.json
+       // Функция чтения данных с нашего сервера на Render
         async function loadData() {
             try {
-                const response = await fetch('data.json');
+                // Указываем адрес твоего Web Service на Render
+                const response = await fetch('https://afterglow-bot.onrender.com/data.json');
+                
                 if (response.ok) {
                     const data = await response.json();
                     document.getElementById('hero-name').innerText = data.hero_name || 'Аноним';
@@ -295,10 +297,10 @@
                     document.getElementById('quote-content').innerText = `«${data.quote || '...' }»`;
                 }
             } catch (e) {
-                console.log('data.json пока не создан, показываем демо-версию');
+                console.log('Ошибка подключения к серверу бота:', e);
             }
         }
-
+        
         loadData();
         
         const tg = window.Telegram.WebApp;
