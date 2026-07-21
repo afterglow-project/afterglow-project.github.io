@@ -66,6 +66,14 @@ jobs:
           distributionUrl=https\://services.gradle.org/distributions/gradle-8.7-all.zip
           EOF
 
+          # Автоматическая смена версии приложения
+      - name: Set App Version
+        run: |
+          if [ -f android/app/build.gradle ]; then
+            sed -i 's/versionName .*/versionName "1.0.5"/g' android/app/build.gradle
+            sed -i 's/versionCode .*/versionCode 5/g' android/app/build.gradle
+          fi
+
       # Запуск сборки
       - name: Build Unsigned Release APK with Gradle
         run: |
