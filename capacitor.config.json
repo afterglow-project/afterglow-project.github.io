@@ -1,0 +1,6 @@
+{
+  "appId": "space.afterglow.app",
+  "appName": "AfterGlow",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}

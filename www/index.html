@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0d0b12">
+    <title>AfterGlow Companion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0d0b12;
+            --card-bg: rgba(25, 20, 36, 0.65);
+            --card-border: rgba(255, 138, 91, 0.2);
+            --accent-primary: #ff7e5f;
+            --accent-secondary: #feb47b;
+            --accent-purple: #9b51e0;
+            --text-main: #f3f3f6;
+            --text-muted: #a099b2;
+            --glow-glow: 0 8px 32px 0 rgba(255, 126, 95, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px 16px 90px;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(155, 81, 224, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(255, 126, 95, 0.14) 0%, transparent 45%);
+            background-attachment: fixed;
+        }
+
+        /* Шапка */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(255, 126, 95, 0.4);
+        }
+
+        .brand-title {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .status-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--accent-secondary);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Контейнер карточек */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 22px;
+            padding: 20px;
+            box-shadow: var(--glow-glow);
+            transition: transform 0.2s ease;
+        }
+
+        .glass-card:active {
+            transform: scale(0.98);
+        }
+
+        .card-tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .card-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        /* Карточка Флудера Дня */
+        .hero-card {
+            background: linear-gradient(135deg, rgba(255, 126, 95, 0.12), rgba(155, 81, 224, 0.12));
+            border: 1px solid rgba(255, 126, 95, 0.35);
+        }
+
+        .user-highlight {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .avatar-placeholder {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #fff;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(255, 126, 95, 0.3);
+        }
+
+        .user-info .name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .user-info .sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Нижнее меню навигации */
+        .nav-bar {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
+            max-width: 440px;
+            background: rgba(18, 14, 26, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--accent-primary);
+        }
+
+        .nav-icon {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <!-- Шапка -->
+        <header class="header">
+            <div class="brand">
+                <div class="logo-icon">AG</div>
+                <div class="brand-title">AfterGlow</div>
+            </div>
+            <div class="status-badge">✨ Live PWA</div>
+        </header>
+
+        <!-- Флудер дня -->
+        <div class="glass-card hero-card">
+            <span class="card-tag">👑 Топ Дня</span>
+            <div class="card-title">Главный Флудер</div>
+            <div class="card-text">Самый активный участник чата за сегодня!</div>
+            
+            <div class="user-highlight">
+                <div class="avatar-placeholder" id="hero-avatar">AG</div>
+                <div class="user-info">
+                    <div class="name" id="hero-name">Ждём данные...</div>
+                    <div class="sub" id="hero-stat">Скрипт собирает статистику</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Дайджест -->
+        <div class="glass-card">
+            <span class="card-tag">📰 Газета Флуда</span>
+            <div class="card-title">О чём шумели сегодня?</div>
+            <div class="card-text" id="digest-content">
+                Скоро здесь появится автоматический дайджест главных событий и мемов из Telegram!
+            </div>
+        </div>
+
+        <!-- Цитата дня -->
+        <div class="glass-card">
+            <span class="card-tag">🔥 Цитата Дня</span>
+            <div class="card-title">Золотые слова</div>
+            <div class="card-text" id="quote-content" style="font-style: italic;">
+                «Приложение AfterGlow официально запущено!»
+            </div>
+        </div>
+    </div>
+
+    <!-- Нижняя панель -->
+    <nav class="nav-bar">
+        <button class="nav-item active">
+            <span class="nav-icon">📰</span>
+            <span>Дайджест</span>
+        </button>
+        <button class="nav-item">
+            <span class="nav-icon">🎴</span>
+            <span>Карточки</span>
+        </button>
+        <button class="nav-item">
+            <span class="nav-icon">⭐</span>
+            <span>Лор</span>
+        </button>
+    </nav>
+
+    <script>
+        // Функция чтения данных из файла data.json
+        async function loadData() {
+            try {
+                const response = await fetch('data.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('hero-name').innerText = data.hero_name || 'Аноним';
+                    document.getElementById('hero-stat').innerText = `${data.message_count || 0} сообщений`;
+                    document.getElementById('hero-avatar').innerText = (data.hero_name || 'A')[0].toUpperCase();
+                    document.getElementById('digest-content').innerText = data.digest || 'Дайджест пуст.';
+                    document.getElementById('quote-content').innerText = `«${data.quote || '...' }»`;
+                }
+            } catch (e) {
+                console.log('data.json пока не создан, показываем демо-версию');
+            }
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
