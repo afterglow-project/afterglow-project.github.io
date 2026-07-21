@@ -41,7 +41,6 @@
             background-attachment: fixed;
         }
 
-        /* Шапка */
         .header {
             display: flex;
             justify-content: space-between;
@@ -75,7 +74,6 @@
             background: linear-gradient(135deg, #ffffff 30%, var(--accent-secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
         }
 
         .status-badge {
@@ -86,16 +84,24 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--accent-secondary);
-            backdrop-filter: blur(10px);
         }
 
-        /* Контейнер карточек */
         .main-container {
             display: flex;
             flex-direction: column;
             gap: 16px;
             max-width: 480px;
             margin: 0 auto;
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .tab-content.active {
+            display: flex;
         }
 
         .glass-card {
@@ -106,11 +112,6 @@
             border-radius: 22px;
             padding: 20px;
             box-shadow: var(--glow-glow);
-            transition: transform 0.2s ease;
-        }
-
-        .glass-card:active {
-            transform: scale(0.98);
         }
 
         .card-tag {
@@ -136,47 +137,63 @@
             color: var(--text-muted);
         }
 
-        /* Карточка Флудера Дня */
-        .hero-card {
-            background: linear-gradient(135deg, rgba(255, 126, 95, 0.12), rgba(155, 81, 224, 0.12));
-            border: 1px solid rgba(255, 126, 95, 0.35);
+        /* Список ТОП 3 */
+        .top-users-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
         }
 
-        .user-highlight {
+        .user-item {
             display: flex;
             align-items: center;
-            gap: 14px;
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .avatar-placeholder {
+        .user-avatar {
             width: 46px;
             height: 46px;
             border-radius: 50%;
+            object-fit: cover;
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
             color: #fff;
-            font-size: 18px;
-            box-shadow: 0 4px 12px rgba(255, 126, 95, 0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .user-info {
+            flex-grow: 1;
         }
 
         .user-info .name {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: #fff;
         }
 
-        .user-info .sub {
-            font-size: 12px;
+        .user-badges {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+            font-size: 11px;
             color: var(--text-muted);
         }
 
-        /* Нижнее меню навигации */
+        .badge-pill {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
         .nav-bar {
             position: fixed;
             bottom: 16px;
@@ -187,13 +204,11 @@
             background: rgba(18, 14, 26, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-radius: 28px;
             padding: 10px 16px;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             z-index: 100;
         }
 
@@ -222,7 +237,6 @@
 <body>
 
     <div class="main-container">
-        <!-- Шапка -->
         <header class="header">
             <div class="brand">
                 <div class="logo-icon">AG</div>
@@ -231,97 +245,139 @@
             <div class="status-badge">✨ Live PWA</div>
         </header>
 
-        <!-- Флудер дня -->
-        <div class="glass-card hero-card">
-            <span class="card-tag">👑 Топ Дня</span>
-            <div class="card-title">Главный Флудер</div>
-            <div class="card-text">Самый активный участник чата за сегодня!</div>
-            
-            <div class="user-highlight">
-                <div class="avatar-placeholder" id="hero-avatar">AG</div>
-                <div class="user-info">
-                    <div class="name" id="hero-name">Ждём данные...</div>
-                    <div class="sub" id="hero-stat">Скрипт собирает статистику</div>
+        <!-- Вкладка 1: Дайджест -->
+        <div class="tab-content active" id="tab-digest">
+            <div class="glass-card">
+                <span class="card-tag">👑 Топ 3 Дня</span>
+                <div class="card-title">Главные Активисты</div>
+                <div class="top-users-list" id="top-users-container">
+                    <div class="card-text">Загрузка топа...</div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <span class="card-tag">📰 Газета Флуда</span>
+                <div class="card-title">О чём шумели сегодня?</div>
+                <div class="card-text" id="digest-content">
+                    Скоро здесь появится автоматический дайджест главных событий и мемов из Telegram!
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <span class="card-tag">🔥 Цитата Дня</span>
+                <div class="card-title">Золотые слова</div>
+                <div class="card-text" id="quote-content" style="font-style: italic;">
+                    «Приложение AfterGlow официально запущено!»
                 </div>
             </div>
         </div>
 
-        <!-- Дайджест -->
-        <div class="glass-card">
-            <span class="card-tag">📰 Газета Флуда</span>
-            <div class="card-title">О чём шумели сегодня?</div>
-            <div class="card-text" id="digest-content">
-                Скоро здесь появится автоматический дайджест главных событий и мемов из Telegram!
+        <!-- Вкладка 2: Карточки -->
+        <div class="tab-content" id="tab-cards">
+            <div class="glass-card">
+                <span class="card-tag">🎴 Коллекция</span>
+                <div class="card-title">Карточки Участников</div>
+                <div class="card-text">
+                    Раздел в разработке! Скоро вы сможете коллекционировать уникальные карточки за активность в чате AfterGlow.
+                </div>
             </div>
         </div>
 
-        <!-- Цитата дня -->
-        <div class="glass-card">
-            <span class="card-tag">🔥 Цитата Дня</span>
-            <div class="card-title">Золотые слова</div>
-            <div class="card-text" id="quote-content" style="font-style: italic;">
-                «Приложение AfterGlow официально запущено!»
+        <!-- Вкладка 3: Лор -->
+        <div class="tab-content" id="tab-lore">
+            <div class="glass-card">
+                <span class="card-tag">⭐ История</span>
+                <div class="card-title">Лор Сообщества AfterGlow</div>
+                <div class="card-text">
+                    AfterGlow — это место, где каждый день рождаются новые мемы, легендарные диалоги и создаются незабываемые моменты!
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Нижняя панель -->
+    <!-- Навигация -->
     <nav class="nav-bar">
-        <button class="nav-item active">
+        <button class="nav-item active" onclick="switchTab(0)">
             <span class="nav-icon">📰</span>
             <span>Дайджест</span>
         </button>
-        <button class="nav-item">
+        <button class="nav-item" onclick="switchTab(1)">
             <span class="nav-icon">🎴</span>
             <span>Карточки</span>
         </button>
-        <button class="nav-item">
+        <button class="nav-item" onclick="switchTab(2)">
             <span class="nav-icon">⭐</span>
             <span>Лор</span>
         </button>
     </nav>
 
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-       // Функция чтения данных с нашего сервера на Render
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // Переключение вкладок
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.nav-item');
+
+            tabs.forEach((tab, i) => {
+                tab.classList.toggle('active', i === index);
+            });
+
+            buttons.forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
+            });
+        }
+
+        // Загрузка данных с Render
         async function loadData() {
             try {
-                // Указываем адрес твоего Web Service на Render
                 const response = await fetch('https://afterglow-bot.onrender.com/data.json');
-                
                 if (response.ok) {
                     const data = await response.json();
-                    document.getElementById('hero-name').innerText = data.hero_name || 'Аноним';
-                    document.getElementById('hero-stat').innerText = `${data.message_count || 0} сообщений`;
-                    document.getElementById('hero-avatar').innerText = (data.hero_name || 'A')[0].toUpperCase();
+                    
+                    // Отрисовка ТОП 3
+                    const container = document.getElementById('top-users-container');
+                    container.innerHTML = '';
+
+                    const medals = ['🥇', '🥈', '🥉'];
+
+                    if (data.top_users && data.top_users.length > 0) {
+                        data.top_users.forEach((u, i) => {
+                            const avatarHtml = u.avatar 
+                                ? `<img class="user-avatar" src="${u.avatar}" alt="ava">`
+                                : `<div class="user-avatar">${(u.name || 'A')[0].toUpperCase()}</div>`;
+
+                            container.innerHTML += `
+                                <div class="user-item">
+                                    ${avatarHtml}
+                                    <div class="user-info">
+                                        <div class="name">${medals[i] || '🔹'} ${u.name}</div>
+                                        <div class="user-badges">
+                                            <span class="badge-pill">✉️ ${u.count}</span>
+                                            ${u.voice ? `<span class="badge-pill">🎙️ ${u.voice}</span>` : ''}
+                                            ${u.video_note ? `<span class="badge-pill">📹 ${u.video_note}</span>` : ''}
+                                            ${u.sticker ? `<span class="badge-pill">🎨 ${u.sticker}</span>` : ''}
+                                            ${u.animation ? `<span class="badge-pill">🎞️ ${u.animation}</span>` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        container.innerHTML = '<div class="card-text">Статистика пока пуста.</div>';
+                    }
+
                     document.getElementById('digest-content').innerText = data.digest || 'Дайджест пуст.';
                     document.getElementById('quote-content').innerText = `«${data.quote || '...' }»`;
                 }
             } catch (e) {
-                console.log('Ошибка подключения к серверу бота:', e);
+                console.log('Ошибка загрузки данных:', e);
             }
         }
-        
+
         loadData();
-        
-        const tg = window.Telegram.WebApp;
-        
-        // Разворачиваем окно на весь экран
-        tg.expand();
-        
-        // Получаем данные пользователя
-        const user = tg.initDataUnsafe?.user;
-        
-        if (user) {
-          console.log(`Привет, ${user.first_name}! Твой ID: ${user.id}`);
-        }
-
-        function sendDataToBot() {
-          const tg = window.Telegram.WebApp;
-          
-          tg.sendData(JSON.stringify({ message: "Пользователь нажал кнопку!" }));
-        }
-
     </script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </body>
 </html>
