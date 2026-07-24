@@ -70,7 +70,7 @@ jobs:
       - name: Set App Version
         run: |
           if [ -f android/app/build.gradle ]; then
-            sed -i 's/versionName .*/versionName "3.6.1"/g' android/app/build.gradle
+            sed -i 's/versionName .*/versionName "3.6.2"/g' android/app/build.gradle
             sed -i 's/versionCode .*/versionCode 5/g' android/app/build.gradle
           fi
 
