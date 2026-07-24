@@ -273,6 +273,172 @@
             transform: scale(1.15);
         }
 
+                /* Голосовая комната AfterGlow */
+        .voice-room {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .voice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+        
+        .voice-user {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Пульсирующая неоновая аура вокруг аватарки */
+        .avatar-wrapper {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .avatar-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple));
+            opacity: 0;
+            transform: scale(0.8);
+            transition: transform 0.1s ease, opacity 0.1s ease;
+            z-index: 0;
+            filter: blur(8px);
+        }
+        
+        /* Эффект при говорении (управляется через JS scale Volume) */
+        .avatar-wrapper.speaking::before {
+            opacity: 1;
+            transform: scale(var(--volume-scale, 1.15));
+        }
+        
+        .voice-avatar {
+            position: relative;
+            z-index: 1;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .voice-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .btn-voice {
+            background: rgba(255, 126, 95, 0.15);
+            border: 1px solid var(--accent-primary);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-voice.active {
+            background: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(255, 126, 95, 0.6);
+        }
+
+        .voice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .voice-user-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .avatar-aura-wrapper {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Неоновый градиент вокруг аватарки */
+        .avatar-aura-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple));
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.15s ease;
+            z-index: 0;
+            filter: blur(6px);
+        }
+        
+        /* Эффект говорения */
+        .avatar-aura-wrapper.speaking::before {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+        
+        .voice-user-avatar {
+            position: relative;
+            z-index: 1;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--card-bg);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .voice-user-name {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-main);
+            text-align: center;
+        }
+        
+        .voice-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 14px;
+        }
+        
+        .btn-voice {
+            background: rgba(255, 126, 95, 0.15);
+            border: 1px solid var(--accent-primary);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -358,6 +524,28 @@
         </div>
     </div>
 
+    <!-- Вкладка 4: Голосовой Чат -->
+<div class="tab-content" id="tab-voice">
+    <div class="glass-card">
+        <span class="card-tag">🔊 Voice Room</span>
+        <div class="card-title">Голосовой Чат AfterGlow</div>
+        
+        <!-- Сетка участников с аватарами -->
+        <div id="voice-participants" class="voice-grid">
+            <!-- Участники будут добавляться сюда через JS -->
+        </div>
+
+        <div class="voice-controls">
+            <button id="btn-connect-voice" class="btn-voice" onclick="toggleVoiceConnection()">
+                🎙️ Войти в голос
+            </button>
+            <button id="btn-mute-voice" class="btn-voice" onclick="toggleMute()" style="display: none;">
+                🔇 Выкл. мик
+            </button>
+        </div>
+    </div>
+</div>
+
     <!-- Навигация -->
     <nav class="nav-bar">
         <button class="nav-item active" onclick="switchTab(0)">
@@ -371,6 +559,10 @@
         <button class="nav-item" onclick="switchTab(2)">
             <span class="nav-icon">⭐</span>
             <span>Лор</span>
+        </button>
+        <button class="nav-item" onclick="switchTab(3)">
+            <span class="nav-icon">🎙️</span>
+            <span>Голос</span>
         </button>
     </nav>
 
@@ -472,6 +664,145 @@
         }
 
         loadData();
+
+        let audioContext;
+let analyser;
+let microphone;
+let javascriptNode;
+
+async function startVoiceVisualizer() {
+    try {
+        // Получаем доступ к микрофону
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        microphone = audioContext.createMediaStreamSource(stream);
+
+        analyser.smoothingTimeConstant = 0.5;
+        analyser.fftSize = 256;
+
+        microphone.connect(analyser);
+
+        const avatarWrapper = document.getElementById('my-avatar-wrapper');
+
+        // Отслеживаем громкость голоса
+        function checkVolume() {
+            const array = new Uint8Array(analyser.frequencyBinCount);
+            analyser.getByteFrequencyData(array);
+
+            let values = 0;
+            for (let i = 0; i < array.length; i++) {
+                values += array[i];
+            }
+
+            const average = values / array.length; // Средняя громкость
+            
+            if (average > 10) { // Если говорим
+                const scale = 1 + Math.min(average / 80, 0.5); // Масштаб свечения
+                avatarWrapper.style.setProperty('--volume-scale', scale);
+                avatarWrapper.classList.add('speaking');
+            } else {
+                avatarWrapper.classList.remove('speaking');
+            }
+
+            requestAnimationFrame(checkVolume);
+        }
+
+        checkVolume();
+    } catch (err) {
+        console.error('Ошибка доступа к микрофону:', err);
+    }
+}
+
+let livekitRoom = null;
+const LIVEKIT_URL = "wss://afterglow-xxxx.livekit.cloud"; // Твой URL из Шага 1
+
+async function toggleVoiceConnection() {
+    const btnConnect = document.getElementById('btn-connect-voice');
+    const btnMute = document.getElementById('btn-mute-voice');
+
+    if (livekitRoom && livekitRoom.state === 'connected') {
+        // Отключаемся
+        await livekitRoom.disconnect();
+        btnConnect.innerText = "🎙️ Войти в голос";
+        btnMute.style.display = "none";
+        document.getElementById('voice-participants').innerHTML = '';
+        return;
+    }
+
+    try {
+        btnConnect.innerText = "⏳ Подключение...";
+        const userName = tg.initDataUnsafe?.user?.first_name || "Гость";
+
+        // 1. Запрашиваем токен с нашего бэкенда Render
+        const res = await fetch(`https://afterglow-bot.onrender.com/get-voice-token?username=${encodeURIComponent(userName)}`);
+        const data = await res.json();
+
+        // 2. Инициализируем LiveKit Room
+        livekitRoom = new LivekitClient.Room({
+            adaptiveStream: true,
+            dynacast: true
+        });
+
+        // 3. Отслеживаем активных спикеров (Неоновая аура)
+        livekitRoom.on(LivekitClient.RoomEvent.ActiveSpeakersChanged, (speakers) => {
+            document.querySelectorAll('.avatar-aura-wrapper').forEach(el => el.classList.remove('speaking'));
+            speakers.forEach(speaker => {
+                const el = document.getElementById(`user-aura-${speaker.identity}`);
+                if (el) el.classList.add('speaking');
+            });
+        });
+
+        // 4. Подключаемся к комнате
+        await livekitRoom.connect(LIVEKIT_URL, data.token);
+        await livekitRoom.localParticipant.enableMicrophone();
+
+        btnConnect.innerText = "❌ Выйти";
+        btnMute.style.display = "inline-block";
+
+        renderVoiceParticipants();
+    } catch (e) {
+        alert("Ошибка входа в голос: " + e.message);
+        btnConnect.innerText = "🎙️ Войти в голос";
+    }
+}
+
+function renderVoiceParticipants() {
+    const container = document.getElementById('voice-participants');
+    container.innerHTML = '';
+
+    if (!livekitRoom) return;
+
+    // Отображаем всех участников комнаты
+    const participants = Array.from(livekitRoom.participants.values());
+    participants.push(livekitRoom.localParticipant);
+
+    participants.forEach(p => {
+        const name = p.identity || "Участник";
+        const auraId = `user-aura-${name}`;
+
+        container.innerHTML += `
+            <div class="voice-user-card">
+                <div class="avatar-aura-wrapper" id="${auraId}">
+                    <div class="voice-user-avatar" style="display:flex;align-items:center;justify-content:center;font-weight:bold;">
+                        ${name[0].toUpperCase()}
+                    </div>
+                </div>
+                <div class="voice-user-name">${name}</div>
+            </div>
+        `;
+    });
+}
+
+function toggleMute() {
+    if (!livekitRoom) return;
+    const isMuted = livekitRoom.localParticipant.isMicrophoneEnabled;
+    livekitRoom.localParticipant.setMicrophoneEnabled(!isMuted);
+    document.getElementById('btn-mute-voice').innerText = isMuted ? "🎙️ Вкл. мик" : "🔇 Выкл. мик";
+}
+
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 </body>
 </html>
