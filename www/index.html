@@ -756,7 +756,7 @@ async function toggleVoiceConnection() {
 
         // 4. Подключаемся к комнате
         await livekitRoom.connect(LIVEKIT_URL, data.token);
-        await livekitRoom.localParticipant.enableMicrophone();
+        await livekitRoom.localParticipant.setMicrophoneEnabled(true);
 
         btnConnect.innerText = "❌ Выйти";
         btnMute.style.display = "inline-block";
