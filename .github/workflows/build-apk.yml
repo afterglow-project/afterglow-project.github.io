@@ -28,6 +28,14 @@ jobs:
           npx cap add android || true
           npx cap sync android
 
+      - name: Inject Audio Permissions into AndroidManifest
+        run: |
+          MANIFEST_FILE="android/app/src/main/AndroidManifest.xml"
+          if [ -f "$MANIFEST_FILE" ]; then
+            echo "Вшиваем разрешения на микрофон в AndroidManifest.xml..."
+            sed -i '/<application/i \    <uses-permission android:name="android.permission.RECORD_AUDIO" \/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" \/>' $MANIFEST_FILE
+          fi
+
       # Установка стабильной Java
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -70,7 +78,7 @@ jobs:
       - name: Set App Version
         run: |
           if [ -f android/app/build.gradle ]; then
-            sed -i 's/versionName .*/versionName "3.6.3"/g' android/app/build.gradle
+            sed -i 's/versionName .*/versionName "3.6.4"/g' android/app/build.gradle
             sed -i 's/versionCode .*/versionCode 5/g' android/app/build.gradle
           fi
 
