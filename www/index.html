@@ -205,7 +205,6 @@
             border-radius: 6px;
         }
 
-        /* Кнопка "Показать ещё" */
         .show-more-btn {
             width: 100%;
             margin-top: 12px;
@@ -273,97 +272,12 @@
             transform: scale(1.15);
         }
 
-                /* Голосовая комната AfterGlow */
-        .voice-room {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .voice-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 20px;
-            width: 100%;
-        }
-        
-        .voice-user {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        /* Пульсирующая неоновая аура вокруг аватарки */
-        .avatar-wrapper {
-            position: relative;
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .avatar-wrapper::before {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple));
-            opacity: 0;
-            transform: scale(0.8);
-            transition: transform 0.1s ease, opacity 0.1s ease;
-            z-index: 0;
-            filter: blur(8px);
-        }
-        
-        /* Эффект при говорении (управляется через JS scale Volume) */
-        .avatar-wrapper.speaking::before {
-            opacity: 1;
-            transform: scale(var(--volume-scale, 1.15));
-        }
-        
-        .voice-avatar {
-            position: relative;
-            z-index: 1;
-            width: 68px;
-            height: 68px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .voice-controls {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-        }
-        
-        .btn-voice {
-            background: rgba(255, 126, 95, 0.15);
-            border: 1px solid var(--accent-primary);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.2s ease;
-        }
-        
-        .btn-voice.active {
-            background: var(--accent-primary);
-            box-shadow: 0 0 20px rgba(255, 126, 95, 0.6);
-        }
-
         .voice-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
             gap: 16px;
             margin: 16px 0;
+            min-height: 80px;
         }
         
         .voice-user-card {
@@ -383,7 +297,6 @@
             justify-content: center;
         }
         
-        /* Неоновый градиент вокруг аватарки */
         .avatar-aura-wrapper::before {
             content: '';
             position: absolute;
@@ -397,7 +310,6 @@
             filter: blur(6px);
         }
         
-        /* Эффект говорения */
         .avatar-aura-wrapper.speaking::before {
             opacity: 1;
             transform: scale(1.2);
@@ -412,6 +324,11 @@
             object-fit: cover;
             background: var(--card-bg);
             border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
         }
         
         .voice-user-name {
@@ -419,6 +336,7 @@
             font-weight: 700;
             color: var(--text-main);
             text-align: center;
+            word-break: break-word;
         }
         
         .voice-controls {
@@ -437,6 +355,11 @@
             font-weight: 700;
             font-size: 13px;
             cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-voice:active {
+            transform: scale(0.95);
         }
 
         @keyframes fadeIn {
@@ -468,10 +391,10 @@
                 <div class="logo-icon">AG</div>
                 <div class="brand-title">AfterGlow</div>
             </div>
-            <div class="status-badge">✨ Live PWA</div>
+            <div class="status-badge">✨ Live App</div>
         </header>
 
-        <!-- Вкладка 1: Главная (Исправленный контейнер) -->
+        <!-- Вкладка 1: Главная -->
         <div class="tab-content active" id="tab-home">
             <div class="glass-card">
                 <span class="card-tag">👑 Топ участников</span>
@@ -522,31 +445,30 @@
                 </div>
             </div>
         </div>
+
+        <!-- Вкладка 4: Голосовой Чат -->
+        <div class="tab-content" id="tab-voice">
+            <div class="glass-card">
+                <span class="card-tag">🔊 Voice Room</span>
+                <div class="card-title">Голосовой Чат AfterGlow</div>
+                
+                <div id="voice-participants" class="voice-grid">
+                    <!-- Участники с аватарами подгружаются здесь -->
+                </div>
+
+                <div class="voice-controls">
+                    <button id="btn-connect-voice" class="btn-voice" onclick="toggleVoiceConnection()">
+                        🎙️ Войти в голос
+                    </button>
+                    <button id="btn-mute-voice" class="btn-voice" onclick="toggleMute()" style="display: none;">
+                        🔇 Выкл. мик
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Вкладка 4: Голосовой Чат -->
-<div class="tab-content" id="tab-voice">
-    <div class="glass-card">
-        <span class="card-tag">🔊 Voice Room</span>
-        <div class="card-title">Голосовой Чат AfterGlow</div>
-        
-        <!-- Сетка участников с аватарами -->
-        <div id="voice-participants" class="voice-grid">
-            <!-- Участники будут добавляться сюда через JS -->
-        </div>
-
-        <div class="voice-controls">
-            <button id="btn-connect-voice" class="btn-voice" onclick="toggleVoiceConnection()">
-                🎙️ Войти в голос
-            </button>
-            <button id="btn-mute-voice" class="btn-voice" onclick="toggleMute()" style="display: none;">
-                🔇 Выкл. мик
-            </button>
-        </div>
-    </div>
-</div>
-
-    <!-- Навигация -->
+    <!-- Навигационная панель -->
     <nav class="nav-bar">
         <button class="nav-item active" onclick="switchTab(0)">
             <span class="nav-icon">📰</span>
@@ -566,14 +488,19 @@
         </button>
     </nav>
 
+    <!-- Подключение сторонних библиотек -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
+
+    <!-- Основной скрипт -->
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram?.WebApp || {};
+        if (tg.expand) tg.expand();
 
         let rawTopUsers = [];
         let isTopExpanded = false;
-        const INITIAL_SHOW_COUNT = 5; // Сколько показывать по умолчанию
+        const INITIAL_SHOW_COUNT = 5;
 
         function switchTab(index) {
             const tabs = document.querySelectorAll('.tab-content');
@@ -621,7 +548,6 @@
                     `;
                 });
 
-                // Показываем кнопку "Показать ещё", если участников больше 5
                 if (rawTopUsers.length > INITIAL_SHOW_COUNT) {
                     showMoreBtn.style.display = 'block';
                     showMoreBtn.innerText = isTopExpanded 
@@ -665,144 +591,133 @@
 
         loadData();
 
-        let audioContext;
-let analyser;
-let microphone;
-let javascriptNode;
+        // LOGIC FOR LIVEKIT VOICE CHAT
+        let livekitRoom = null;
+        const LIVEKIT_URL = "wss://afterglow-voice-qrxmpndn.livekit.cloud"; 
 
-async function startVoiceVisualizer() {
-    try {
-        // Получаем доступ к микрофону
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioContext.createAnalyser();
-        microphone = audioContext.createMediaStreamSource(stream);
+        async function toggleVoiceConnection() {
+            const btnConnect = document.getElementById('btn-connect-voice');
+            const btnMute = document.getElementById('btn-mute-voice');
 
-        analyser.smoothingTimeConstant = 0.5;
-        analyser.fftSize = 256;
-
-        microphone.connect(analyser);
-
-        const avatarWrapper = document.getElementById('my-avatar-wrapper');
-
-        // Отслеживаем громкость голоса
-        function checkVolume() {
-            const array = new Uint8Array(analyser.frequencyBinCount);
-            analyser.getByteFrequencyData(array);
-
-            let values = 0;
-            for (let i = 0; i < array.length; i++) {
-                values += array[i];
+            // Если уже подключены — выходим
+            if (livekitRoom && livekitRoom.state === 'connected') {
+                await livekitRoom.disconnect();
+                livekitRoom = null;
+                btnConnect.innerText = "🎙️ Войти в голос";
+                btnMute.style.display = "none";
+                document.getElementById('voice-participants').innerHTML = '';
+                return;
             }
 
-            const average = values / array.length; // Средняя громкость
-            
-            if (average > 10) { // Если говорим
-                const scale = 1 + Math.min(average / 80, 0.5); // Масштаб свечения
-                avatarWrapper.style.setProperty('--volume-scale', scale);
-                avatarWrapper.classList.add('speaking');
-            } else {
-                avatarWrapper.classList.remove('speaking');
-            }
+            try {
+                btnConnect.innerText = "⏳ Проверка микрофона...";
 
-            requestAnimationFrame(checkVolume);
+                // 1. Проверяем микрофон и СРАЗУ ГАСИМ ТРЕК (чтобы не занимать устройство!)
+                try {
+                    const testStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    testStream.getTracks().forEach(track => track.stop());
+                } catch (permErr) {
+                    throw new Error("Доступ к микрофону заблокирован. Разрешите микрофон в настройках приложения/телефона.");
+                }
+
+                btnConnect.innerText = "⏳ Подключение...";
+                const userName = tg.initDataUnsafe?.user?.first_name || "Гость";
+
+                // 2. Получаем токен с сервера
+                const res = await fetch(`https://afterglow-bot.onrender.com/get-voice-token?username=${encodeURIComponent(userName)}`);
+                if (!res.ok) throw new Error("Сервер не смог выдать токен");
+                const data = await res.json();
+
+                // 3. Создаем комнату LiveKit
+                livekitRoom = new LivekitClient.Room({
+                    adaptiveStream: true,
+                    dynacast: true
+                });
+
+                // 4. Подписываемся на события комнаты
+                
+                // Подключение/отключение треков (чтобы СЛЫШАТЬ других пользователей)
+                livekitRoom.on(LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
+                    if (track.kind === LivekitClient.Track.Kind.Audio) {
+                        const audioEl = track.attach();
+                        document.body.appendChild(audioEl);
+                    }
+                });
+
+                livekitRoom.on(LivekitClient.RoomEvent.TrackUnsubscribed, (track) => {
+                    track.detach().forEach(el => el.remove());
+                });
+
+                // Аура при разговоре
+                livekitRoom.on(LivekitClient.RoomEvent.ActiveSpeakersChanged, (speakers) => {
+                    document.querySelectorAll('.avatar-aura-wrapper').forEach(el => el.classList.remove('speaking'));
+                    speakers.forEach(speaker => {
+                        const el = document.getElementById(`user-aura-${speaker.identity}`);
+                        if (el) el.classList.add('speaking');
+                    });
+                });
+
+                // Обновление списка людей при входе/выходе
+                livekitRoom.on(LivekitClient.RoomEvent.ParticipantConnected, renderVoiceParticipants);
+                livekitRoom.on(LivekitClient.RoomEvent.ParticipantDisconnected, renderVoiceParticipants);
+
+                // 5. Подключаемся и активируем микрофон через LiveKit
+                await livekitRoom.connect(LIVEKIT_URL, data.token);
+                await livekitRoom.localParticipant.setMicrophoneEnabled(true);
+
+                btnConnect.innerText = "❌ Выйти";
+                btnMute.style.display = "inline-block";
+                btnMute.innerText = "🔇 Выкл. мик";
+
+                renderVoiceParticipants();
+
+            } catch (e) {
+                console.error("Voice Connection Error:", e);
+                alert("⚠️ " + (e.message || "Не удалось подключиться к голосовому чату"));
+                btnConnect.innerText = "🎙️ Войти в голос";
+                btnMute.style.display = "none";
+            }
         }
 
-        checkVolume();
-    } catch (err) {
-        console.error('Ошибка доступа к микрофону:', err);
-    }
-}
+        function renderVoiceParticipants() {
+            const container = document.getElementById('voice-participants');
+            container.innerHTML = '';
 
-let livekitRoom = null;
-const LIVEKIT_URL = "wss://afterglow-voice-qrxmpndn.livekit.cloud"; 
+            if (!livekitRoom) return;
 
-async function toggleVoiceConnection() {
-    const btnConnect = document.getElementById('btn-connect-voice');
-    const btnMute = document.getElementById('btn-mute-voice');
+            // Собираем всех удаленных участников + локального
+            const participants = Array.from(livekitRoom.remoteParticipants.values());
+            if (livekitRoom.localParticipant) {
+                participants.push(livekitRoom.localParticipant);
+            }
 
-    if (livekitRoom && livekitRoom.state === 'connected') {
-        // Отключаемся
-        await livekitRoom.disconnect();
-        btnConnect.innerText = "🎙️ Войти в голос";
-        btnMute.style.display = "none";
-        document.getElementById('voice-participants').innerHTML = '';
-        return;
-    }
+            participants.forEach(p => {
+                const name = p.identity || "Участник";
+                const auraId = `user-aura-${name}`;
 
-    try {
-        btnConnect.innerText = "⏳ Подключение...";
-        const userName = tg.initDataUnsafe?.user?.first_name || "Гость";
-
-        // 1. Запрашиваем токен с нашего бэкенда Render
-        const res = await fetch(`https://afterglow-bot.onrender.com/get-voice-token?username=${encodeURIComponent(userName)}`);
-        const data = await res.json();
-
-        // 2. Инициализируем LiveKit Room
-        livekitRoom = new LivekitClient.Room({
-            adaptiveStream: true,
-            dynacast: true
-        });
-
-        // 3. Отслеживаем активных спикеров (Неоновая аура)
-        livekitRoom.on(LivekitClient.RoomEvent.ActiveSpeakersChanged, (speakers) => {
-            document.querySelectorAll('.avatar-aura-wrapper').forEach(el => el.classList.remove('speaking'));
-            speakers.forEach(speaker => {
-                const el = document.getElementById(`user-aura-${speaker.identity}`);
-                if (el) el.classList.add('speaking');
-            });
-        });
-
-        // 4. Подключаемся к комнате
-        await livekitRoom.connect(LIVEKIT_URL, data.token);
-        await livekitRoom.localParticipant.setMicrophoneEnabled(true);
-
-        btnConnect.innerText = "❌ Выйти";
-        btnMute.style.display = "inline-block";
-
-        renderVoiceParticipants();
-    } catch (e) {
-        alert("Ошибка входа в голос: " + e.message);
-        btnConnect.innerText = "🎙️ Войти в голос";
-    }
-}
-
-function renderVoiceParticipants() {
-    const container = document.getElementById('voice-participants');
-    container.innerHTML = '';
-
-    if (!livekitRoom) return;
-
-    // Отображаем всех участников комнаты
-    const participants = Array.from(livekitRoom.participants.values());
-    participants.push(livekitRoom.localParticipant);
-
-    participants.forEach(p => {
-        const name = p.identity || "Участник";
-        const auraId = `user-aura-${name}`;
-
-        container.innerHTML += `
-            <div class="voice-user-card">
-                <div class="avatar-aura-wrapper" id="${auraId}">
-                    <div class="voice-user-avatar" style="display:flex;align-items:center;justify-content:center;font-weight:bold;">
-                        ${name[0].toUpperCase()}
+                container.innerHTML += `
+                    <div class="voice-user-card">
+                        <div class="avatar-aura-wrapper" id="${auraId}">
+                            <div class="voice-user-avatar">
+                                ${(name[0] || 'A').toUpperCase()}
+                            </div>
+                        </div>
+                        <div class="voice-user-name">${name}</div>
                     </div>
-                </div>
-                <div class="voice-user-name">${name}</div>
-            </div>
-        `;
-    });
-}
+                `;
+            });
+        }
 
-function toggleMute() {
-    if (!livekitRoom) return;
-    const isMuted = livekitRoom.localParticipant.isMicrophoneEnabled;
-    livekitRoom.localParticipant.setMicrophoneEnabled(!isMuted);
-    document.getElementById('btn-mute-voice').innerText = isMuted ? "🎙️ Вкл. мик" : "🔇 Выкл. мик";
-}
-
+        function toggleMute() {
+            if (!livekitRoom || !livekitRoom.localParticipant) return;
+            
+            const btnMute = document.getElementById('btn-mute-voice');
+            const isEnabled = livekitRoom.localParticipant.isMicrophoneEnabled;
+            
+            // Инвертируем состояние микрофона
+            livekitRoom.localParticipant.setMicrophoneEnabled(!isEnabled);
+            btnMute.innerText = isEnabled ? "🎙️ Вкл. мик" : "🔇 Выкл. мик";
+        }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 </body>
 </html>
