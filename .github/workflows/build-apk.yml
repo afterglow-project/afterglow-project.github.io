@@ -32,8 +32,8 @@ jobs:
         run: |
           MANIFEST_FILE="android/app/src/main/AndroidManifest.xml"
           if [ -f "$MANIFEST_FILE" ]; then
-            echo "Вшиваем разрешения на микрофон в AndroidManifest.xml..."
-            sed -i '/<application/i \    <uses-permission android:name="android.permission.RECORD_AUDIO" \/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" \/>' $MANIFEST_FILE
+            echo "Вшиваем разрешения на доступ к файлам и аудио в AndroidManifest.xml..."
+            sed -i '/<application/i \    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" \/>\n    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" \/>\n    <uses-permission android:name="android.permission.RECORD_AUDIO" \/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" \/>' $MANIFEST_FILE
           fi
 
       # Установка стабильной Java
@@ -78,7 +78,7 @@ jobs:
       - name: Set App Version
         run: |
           if [ -f android/app/build.gradle ]; then
-            sed -i 's/versionName .*/versionName "3.6.4"/g' android/app/build.gradle
+            sed -i 's/versionName .*/versionName "0.1"/g' android/app/build.gradle
             sed -i 's/versionCode .*/versionCode 5/g' android/app/build.gradle
           fi
 
@@ -102,5 +102,5 @@ jobs:
       - name: Upload Signed APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AfterGlow-App
+          name: AfterGlow Sound
           path: ${{ steps.sign_app.outputs.signedReleaseFile }}
