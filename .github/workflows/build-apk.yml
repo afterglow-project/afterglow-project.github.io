@@ -17,33 +17,29 @@ jobs:
         with:
           node-version: 18
 
-      # Установка Capacitor на сервере GitHub
       - name: Install Capacitor
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      # Синхронизация папки www с Android проектом
       - name: Add and Sync Android Platform
         run: |
           npx cap add android || true
           npx cap sync android
 
-      - name: Inject Audio Permissions into AndroidManifest
+      - name: Inject Permissions into AndroidManifest
         run: |
           MANIFEST_FILE="android/app/src/main/AndroidManifest.xml"
           if [ -f "$MANIFEST_FILE" ]; then
-            echo "Вшиваем разрешения на доступ к файлам и аудио в AndroidManifest.xml..."
-            sed -i '/<application/i \    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" \/>\n    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" \/>\n    <uses-permission android:name="android.permission.RECORD_AUDIO" \/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" \/>' $MANIFEST_FILE
+            echo "Добавляем разрешения в AndroidManifest.xml..."
+            sed -i '/<application/i \    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" \/>\n    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" \/>\n    <uses-permission android:name="android.permission.RECORD_AUDIO" \/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" \/>\n    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" \/>' $MANIFEST_FILE
           fi
 
-      # Установка стабильной Java
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
 
-      # Принудительно поднимаем версию Android SDK до 35 (Android 15)
       - name: Patch Android SDK Version to 35
         run: |
           if [ -f android/variables.gradle ]; then
@@ -51,19 +47,16 @@ jobs:
             sed -i 's/targetSdkVersion.*/targetSdkVersion = 35/g' android/variables.gradle
           fi
 
-      # Устранение дубликатов Котлина
       - name: Fix Duplicate Kotlin Classes
         run: |
           echo -e "\nconfigurations.all {\n    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'\n    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'\n}" >> android/app/build.gradle
 
-      # КИЛЛ-ХАК: Создаем папку 29.0.3 и линкуем актуальные инструменты сборки
       - name: Force Symlink Build Tools 29.0.3 to Modern Version
         run: |
           sudo mkdir -p /usr/local/lib/android/sdk/build-tools/29.0.3
           REAL_TOOLS=$(ls -d /usr/local/lib/android/sdk/build-tools/* | grep -v "29.0.3" | tail -n 1)
           sudo ln -sf $REAL_TOOLS/* /usr/local/lib/android/sdk/build-tools/29.0.3/
 
-      # Патчим файл настроек Gradle на версию 8.7 (чтобы не было ошибки с Java 21)
       - name: Patch Gradle Wrapper Properties to 8.7
         run: |
           cat << 'EOF' > android/gradle/wrapper/gradle-wrapper.properties
@@ -74,20 +67,17 @@ jobs:
           distributionUrl=https\://services.gradle.org/distributions/gradle-8.7-all.zip
           EOF
 
-          # Автоматическая смена версии приложения
       - name: Set App Version
         run: |
           if [ -f android/app/build.gradle ]; then
-            sed -i 's/versionName .*/versionName "0.1"/g' android/app/build.gradle
+            sed -i 's/versionName .*/versionName "0.1.1"/g' android/app/build.gradle
             sed -i 's/versionCode .*/versionCode 5/g' android/app/build.gradle
           fi
 
-      # Запуск сборки
       - name: Build Unsigned Release APK with Gradle
         run: |
           cd android && ./gradlew assembleRelease --no-daemon
 
-      # Автоматическая подпись файла твоими секретами
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
         id: sign_app
@@ -98,7 +88,6 @@ jobs:
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-      # Выгрузка готового приложения
       - name: Upload Signed APK Artifact
         uses: actions/upload-artifact@v4
         with:
