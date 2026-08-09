@@ -2,7 +2,7 @@
 <html lang="ru" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>AfterGlow Music Glass v0.1</title>
   <style>
     :root {
@@ -59,19 +59,28 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-      user-select: none;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+      -webkit-touch-callout: none !important;
+      outline: none !important;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: fixed;
+      touch-action: manipulation;
+      overscroll-behavior: none;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
     }
 
     body {
-      background-color: var(--bg-page);
-      color: var(--text-primary);
-      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-      overflow: hidden;
-      position: relative;
     }
 
     #bg-overlay {
@@ -94,6 +103,7 @@
       z-index: 0;
       opacity: 0.6;
       animation: float 14s infinite alternate ease-in-out;
+      will-change: transform;
     }
 
     .blob-1 {
@@ -117,18 +127,16 @@
     .app-container {
       position: relative;
       z-index: 1;
-      width: 100%;
-      max-width: 420px;
-      height: 740px;
-      border-radius: 36px;
+      width: 100vw;
+      height: 100vh;
       background: var(--glass-bg);
       backdrop-filter: blur(var(--blur-amount)) saturate(190%);
       -webkit-backdrop-filter: blur(var(--blur-amount)) saturate(190%);
-      border: 1.5px solid var(--glass-border);
-      box-shadow: 0 30px 60px var(--shadow-color), inset 0 1.5px 0 var(--glass-specular);
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
     }
 
     .header {
@@ -156,12 +164,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.15s ease;
       box-shadow: inset 0 1px 0 var(--glass-specular), 0 4px 10px var(--shadow-color);
     }
 
-    .icon-btn:hover { background: var(--glass-card-hover); transform: scale(1.05); }
-    .icon-btn:active { transform: scale(0.95); }
+    .icon-btn:active { transform: scale(0.92); }
 
     .svg-icon {
       width: 20px; height: 20px;
@@ -186,6 +193,8 @@
       font-size: 0.85rem;
       outline: none;
       box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+      user-select: text !important;
+      -webkit-user-select: text !important;
     }
 
     .search-input::placeholder { color: var(--text-secondary); }
@@ -241,14 +250,7 @@
       font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: inset 0 1px 0 var(--glass-specular);
-    }
-
-    .custom-file-btn:hover {
-      background: var(--glass-card-hover);
-      border-color: var(--accent);
-      transform: translateY(-1px);
     }
 
     .main-screen {
@@ -258,6 +260,7 @@
       padding: 0 16px;
       overflow-y: auto;
       padding-bottom: 95px;
+      -webkit-overflow-scrolling: touch;
     }
 
     .playlist { display: flex; flex-direction: column; gap: 8px; }
@@ -273,8 +276,6 @@
       cursor: pointer;
       box-shadow: inset 0 1px 0 var(--glass-specular);
     }
-
-    .playlist-item:hover { background: var(--glass-card-hover); }
 
     .playlist-item.active {
       border-color: var(--accent);
@@ -319,12 +320,11 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    .btn-action-small:hover { color: var(--text-primary); }
     .btn-action-small.fav.active svg { fill: #ff4757; stroke: #ff4757; }
 
     .mini-player {
       position: absolute;
-      bottom: 0; left: 0; width: 100%; height: 82px;
+      bottom: env(safe-area-inset-bottom); left: 0; width: 100%; height: 82px;
       background: var(--glass-bg);
       backdrop-filter: blur(25px) saturate(200%);
       -webkit-backdrop-filter: blur(25px) saturate(200%);
@@ -367,8 +367,11 @@
       z-index: 100;
       display: flex; flex-direction: column;
       padding: 24px;
+      padding-top: calc(24px + env(safe-area-inset-top));
+      padding-bottom: calc(24px + env(safe-area-inset-bottom));
       transform: translateY(100%);
-      transition: transform 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);
+      transition: transform 0.35s cubic-bezier(0.1, 0.9, 0.2, 1);
+      will-change: transform;
     }
 
     .full-player.open { transform: translateY(0); }
@@ -407,7 +410,6 @@
       display: flex; gap: 6px; align-items: center;
       box-shadow: inset 0 1px 0 var(--glass-specular);
     }
-    .change-cover-badge:hover { background: var(--glass-card-hover); }
 
     .lyrics-view {
       width: 100%; height: 100%;
@@ -495,8 +497,12 @@
       backdrop-filter: blur(40px) saturate(200%);
       -webkit-backdrop-filter: blur(40px) saturate(200%);
       z-index: 120; display: flex; flex-direction: column;
-      padding: 24px; transform: translateX(100%);
+      padding: 24px;
+      padding-top: calc(24px + env(safe-area-inset-top));
+      padding-bottom: calc(24px + env(safe-area-inset-bottom));
+      transform: translateX(100%);
       transition: transform 0.35s ease-in-out;
+      will-change: transform;
     }
 
     .settings-screen.open { transform: translateX(0); }
@@ -630,6 +636,8 @@
       width: 100%; padding: 10px 14px; border-radius: 12px;
       background: var(--glass-card); border: 1px solid var(--glass-border);
       color: var(--text-primary); font-size: 0.85rem; outline: none;
+      user-select: text !important;
+      -webkit-user-select: text !important;
     }
 
     .modal-textarea { height: 90px; resize: none; }
@@ -687,7 +695,7 @@
 
     <div class="main-screen">
       <div class="playlist" id="playlist">
-        <div class="empty-state">Список пуст.<br>Перетащите файлы или нажмите «Папка».</div>
+        <div class="empty-state">Список пуст.<br>Нажмите «+» или «Папка» для добавления музыки.</div>
       </div>
     </div>
 
@@ -880,7 +888,7 @@
 
         <div class="settings-group about-box">
           <div style="font-weight: 700; font-size: 0.95rem;">AfterGlow Music Glass v3.0</div>
-          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top:4px;">Плеер с кроссфейдом, Media Session API и счетчиком прослушиваний.</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top:4px;">Плеер с кроссфейдом, Media Session API и поддержкой HyperOS.</div>
         </div>
       </div>
     </div>
@@ -904,11 +912,11 @@
   <input type="file" id="folder-input" webkitdirectory directory multiple accept="audio/*">
 
   <script>
-    let playlist = [];
-    let fetchedOnlineTracks = [];
-    let isSearchingOnline = false;
-    let searchTimeout = null;
+    // Блокировка жестов масштабирования
+    document.addEventListener('gesturestart', (e) => e.preventDefault());
+    document.addEventListener('dblclick', (e) => e.preventDefault());
 
+    let playlist = [];
     let currentIndex = 0;
     let isPlaying = false;
     let isShuffle = false;
@@ -980,7 +988,7 @@
     dropZone.addEventListener('dragover', (e) => e.preventDefault());
     dropZone.addEventListener('drop', (e) => {
       e.preventDefault();
-      const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('audio/'));
+      const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('audio/') || f.name.match(/\.(mp3|wav|ogg|flac|m4a)$/i));
       if (files.length) addFiles(files);
     });
 
@@ -1005,51 +1013,10 @@
       document.getElementById('bg-opacity-val').textContent = val;
     }
 
-    async function scanDeviceFolder() {
-      if ('showDirectoryPicker' in window) {
-        try {
-          const dirHandle = await window.showDirectoryPicker();
-          const files = [];
-          for await (const entry of dirHandle.values()) {
-            if (entry.kind === 'file') {
-              const file = await entry.getFile();
-              if (file.type.startsWith('audio/') || file.name.match(/\.(mp3|wav|ogg|flac|m4a)$/i)) {
-                files.push(file);
-              }
-            }
-          }
-          if (files.length) addFiles(files);
-        } catch (err) {
-          console.log('Отменено');
-        }
-      } else {
-        folderInput.click();
-      }
+    function scanDeviceFolder() {
+      folderInput.click();
     }
 
-async function scanDeviceFolder() {
-      if ('showDirectoryPicker' in window) {
-        try {
-          const dirHandle = await window.showDirectoryPicker();
-          const files = [];
-          for await (const entry of dirHandle.values()) {
-            if (entry.kind === 'file') {
-              const file = await entry.getFile();
-              if (file.type.startsWith('audio/') || file.name.match(/\.(mp3|wav|ogg|flac|m4a)$/i)) {
-                files.push(file);
-              }
-            }
-          }
-          if (files.length) addFiles(files);
-        } catch (err) {
-          console.log('Отменено');
-        }
-      } else {
-        folderInput.click();
-      }
-    }
-
-    // Вспомогательная функция для получения длительности аудиофайла
     function getAudioDuration(file) {
       return new Promise((resolve) => {
         const tempAudio = new Audio();
@@ -1066,20 +1033,20 @@ async function scanDeviceFolder() {
       });
     }
 
-    // Единственная и правильная функция добавления файлов с фильтрацией > 30 секунд
     async function addFiles(files) {
       if (!files.length) return;
 
       const filteredFiles = [];
       for (const file of files) {
+        if (!file.type.startsWith('audio/') && !file.name.match(/\.(mp3|wav|ogg|flac|m4a)$/i)) continue;
         const duration = await getAudioDuration(file);
-        if (duration > 30) {
+        if (duration === 0 || duration > 30) {
           filteredFiles.push(file);
         }
       }
 
       if (!filteredFiles.length) {
-        alert("Не найдено аудиофайлов длительностью более 30 секунд!");
+        alert("Аудиофайлы не найдены или их длительность меньше 30 секунд!");
         return;
       }
 
@@ -1095,9 +1062,10 @@ async function scanDeviceFolder() {
         playCount: 0
       }));
 
+      const startIdx = playlist.length;
       playlist = [...playlist, ...newTracks];
       renderPlaylist();
-      if (playlist.length === newTracks.length) loadTrack(0);
+      if (startIdx === 0) loadTrack(0);
     }
 
     coverInput.addEventListener('change', (e) => {
@@ -1114,7 +1082,9 @@ async function scanDeviceFolder() {
 
     function initAudioContext() {
       if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        audioCtx = new AudioContextClass();
         analyser = audioCtx.createAnalyser();
         gainNode = audioCtx.createGain();
         analyser.fftSize = 64;
@@ -1184,7 +1154,7 @@ async function scanDeviceFolder() {
       incrementPlayStat(track);
       saveState();
 
-      if (isPlaying) audio.play();
+      if (isPlaying) audio.play().catch(() => {});
     }
 
     function initMediaSession() {
@@ -1210,6 +1180,14 @@ async function scanDeviceFolder() {
           album: track.album || 'AfterGlow Music',
           artwork: [{ src: track.cover, sizes: '512x512', type: 'image/jpeg' }]
         });
+        
+        if (audio.duration && !isNaN(audio.duration) && 'setPositionState' in navigator.mediaSession) {
+          navigator.mediaSession.setPositionState({
+            duration: audio.duration,
+            playbackRate: audio.playbackRate,
+            position: audio.currentTime
+          });
+        }
       }
     }
 
@@ -1252,10 +1230,11 @@ async function scanDeviceFolder() {
 
     function playTrack() {
       isPlaying = true;
-      audio.play();
-      updatePlayIcons();
-      startRhythmAnimation();
-      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "playing";
+      audio.play().then(() => {
+        updatePlayIcons();
+        startRhythmAnimation();
+        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "playing";
+      }).catch(err => console.log("Playback error:", err));
     }
 
     function pauseTrack() {
@@ -1289,13 +1268,8 @@ async function scanDeviceFolder() {
       }, fadeTime * 1000);
     }
 
-    function nextTrackWithFade() {
-      executeCrossfade(() => nextTrack());
-    }
-
-    function prevTrackWithFade() {
-      executeCrossfade(() => prevTrack());
-    }
+    function nextTrackWithFade() { executeCrossfade(() => nextTrack()); }
+    function prevTrackWithFade() { executeCrossfade(() => prevTrack()); }
 
     function updatePlayIcons() {
       const pauseSvg = '<svg class="svg-icon" style="width:20px; height:20px; fill:currentColor; stroke:none;" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
@@ -1527,6 +1501,7 @@ async function scanDeviceFolder() {
       durationEl.textContent = formatTime(duration);
 
       if (parsedLrc.length > 0) updateLrcHighlight(currentTime);
+      updateMediaSession();
       saveState();
     });
 
@@ -1566,7 +1541,7 @@ async function scanDeviceFolder() {
       });
 
       if (!filtered.length) {
-        playlistEl.innerHTML = '<div class="empty-state">Список пуст.<br>Перетащите файлы или нажмите «Папка».</div>';
+        playlistEl.innerHTML = '<div class="empty-state">Список пуст.<br>Нажмите «+» или «Папка» для добавления музыки.</div>';
         return;
       }
 
