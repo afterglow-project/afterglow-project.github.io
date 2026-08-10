@@ -1,6 +1,6 @@
 {
   "appId": "space.afterglow.app",
-  "appName": "AfterGlow Sound",
+  "appName": "AfterGlow",
   "webDir": "www",
   "bundledWebRuntime": false
 }

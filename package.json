@@ -3,6 +3,9 @@
     "@capacitor/assets": "^3.0.5"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/filesystem": "^8.1.2",
+    "@capacitor/haptics": "^8.0.2",
     "nxp": "^0.6.2"
   }
 }

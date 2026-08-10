@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AfterGlow</string>
+    <string name="title_activity_main">AfterGlow</string>
+    <string name="package_name">space.afterglow.app</string>
+    <string name="custom_url_scheme">space.afterglow.app</string>
+</resources>
