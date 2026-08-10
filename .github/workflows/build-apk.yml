@@ -41,11 +41,11 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Patch Android SDK Version to 35
+      - name: Patch Android SDK Version to 34
         run: |
           if [ -f android/variables.gradle ]; then
-            sed -i 's/compileSdkVersion.*/compileSdkVersion = 35/g' android/variables.gradle
-            sed -i 's/targetSdkVersion.*/targetSdkVersion = 35/g' android/variables.gradle
+            sed -i 's/compileSdkVersion.*/compileSdkVersion = 34/g' android/variables.gradle
+            sed -i 's/targetSdkVersion.*/targetSdkVersion = 34/g' android/variables.gradle
           fi
 
       - name: Fix Duplicate Kotlin Classes
@@ -91,3 +91,4 @@ jobs:
         with:
           name: AfterGlow Sound
           path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+        
