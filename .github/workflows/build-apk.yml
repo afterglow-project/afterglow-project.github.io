@@ -35,11 +35,11 @@ jobs:
             sed -i '/<application/i \    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" \/>\n    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" \/>' $MANIFEST_FILE
           fi
 
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '17'
 
       - name: Patch Android SDK Version to 35
         run: |
@@ -51,12 +51,6 @@ jobs:
       - name: Fix Duplicate Kotlin Classes
         run: |
           echo -e "\nconfigurations.all {\n    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'\n    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'\n}" >> android/app/build.gradle
-
-      - name: Force Symlink Build Tools 29.0.3 to Modern Version
-        run: |
-          sudo mkdir -p /usr/local/lib/android/sdk/build-tools/29.0.3
-          REAL_TOOLS=$(ls -d /usr/local/lib/android/sdk/build-tools/* | grep -v "29.0.3" | tail -n 1)
-          sudo ln -sf $REAL_TOOLS/* /usr/local/lib/android/sdk/build-tools/29.0.3/
 
       - name: Patch Gradle Wrapper Properties to 8.7
         run: |
@@ -74,7 +68,7 @@ jobs:
             sed -i 's/versionName .*/versionName "0.2.0"/g' android/app/build.gradle
             sed -i 's/versionCode .*/versionCode 5/g' android/app/build.gradle
           fi
-          
+
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
