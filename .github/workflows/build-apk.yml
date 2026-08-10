@@ -32,6 +32,7 @@ jobs:
           if [ -f "$MANIFEST_FILE" ]; then
             echo "Добавляем разрешения в AndroidManifest.xml..."
             sed -i '/<application/i \    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" \/>\n    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" \/>\n    <uses-permission android:name="android.permission.RECORD_AUDIO" \/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" \/>\n    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" \/>' $MANIFEST_FILE
+            sed -i '/<application/i \    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" \/>\n    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" \/>' $MANIFEST_FILE
           fi
 
       - name: Set up JDK 21
@@ -70,9 +71,12 @@ jobs:
       - name: Set App Version
         run: |
           if [ -f android/app/build.gradle ]; then
-            sed -i 's/versionName .*/versionName "0.1.1"/g' android/app/build.gradle
+            sed -i 's/versionName .*/versionName "0.2.0"/g' android/app/build.gradle
             sed -i 's/versionCode .*/versionCode 5/g' android/app/build.gradle
           fi
+          
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
 
       - name: Build Unsigned Release APK with Gradle
         run: |
